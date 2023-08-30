@@ -59,7 +59,26 @@ def logout_user(request):
         return redirect(index)
 
 def profile_user(request):
-    return render(request, 'profile.html')
+    check_user_login(request)
+
+    stories = storyHistory.objects.filter(user_id=request.user.id)
+
+    if request.method == "POST":
+        user = User.objects.get(pk=request.user.id)
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        
+        if len(request.POST['password1']) > 0:
+            if request.POST['password1'] == request.POST['password2']:
+                user.password = make_password(request.POST['password1'])
+            else:
+                return render(request, 'profile.html', {'error': 'Password does not match!'})
+            
+        user.save()
+        return logout_user(request)
+    
+    else:
+        return render(request, 'profile.html', {'stories' : stories})
 
 
 def check_user_login(request):
@@ -119,7 +138,7 @@ def generate_story(name, friend, story):
     data = {
         "model": "gpt-3.5-turbo",
         "messages": [
-            {"role": "system","content": f"Create a story using {name}, {friend}, {story}."},
+            {"role": "system","content": f"Create a child friendly story using protagonist:{name}, friend's name:{friend}, and on the topic:{story}. Do not have violent words in the story and let it have a good moral message."},
         ]
     }
 
