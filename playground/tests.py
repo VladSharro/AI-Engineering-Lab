@@ -2,6 +2,9 @@ from django.test import TestCase
 from playground.models import storyHistory
 from django.contrib.auth.models import User  # If you're using the default User model
 
+
+#python manage.py test playground.tests.StoryHistoryModelTestCase
+
 class StoryHistoryModelTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="testpassword")
