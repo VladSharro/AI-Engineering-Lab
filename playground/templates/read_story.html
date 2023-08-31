@@ -1,0 +1,84 @@
+{% extends "layout/master.html" %}
+
+{%block title %}
+Home Page
+{% endblock %}
+
+{% block content %}
+<!-- Main Content-->
+<div class="container px-4 px-lg-8">
+    <div class="row gx-4 gx-lg-8 justify-content-center">
+        <div class="col-md-10 col-lg-10 col-xl-8">
+            <!-- Post preview-->
+            <div class="card-body">
+                {% for story in stories %}
+                <div class="post-preview ">
+                    <a href="#">
+                        <h2 class="post-title">Story of {{ story.name }} and {{ story.friend_name }} about {{ story.story_topic }}</h2>
+                    </a>
+                    <div class="margin-top: 10px;">
+                        <button id="speakButton" class="btn btn-success btn-sm">
+                          Click to Speak <span class="fa fa-play"></span>
+                        </button>
+                    </div>
+                    <p id="text-of-story" class="post-subtitle" style="text-align: justify;text-justify: inter-word;margin: 20px 0px;">
+                        {{ story.generated_story }}
+                    </p>
+                    <p class="post-meta">
+                        Created By
+                        <a href="#!">{{ user.first_name }}</a>
+                        on {{ story.created_at }}
+                    </p>
+                </div>
+                 <!-- Divider-->
+                <hr class="my-4" />
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block shared %}
+<script>
+document.getElementById('speakButton').addEventListener('click', () => {
+    function getVoices() {
+        let voices = speechSynthesis.getVoices();
+        if (!voices.length) {
+            // some time the voice will not be initialized so we can call speak with empty string
+            // this will initialize the voices 
+            let utterance = new SpeechSynthesisUtterance("");
+            speechSynthesis.speak(utterance);
+            voices = speechSynthesis.getVoices();
+        }
+        return voices;
+    }
+    
+    function speak(text, voice, rate, pitch, volume) {
+        // create a SpeechSynthesisUtterance to configure the how text to be spoken 
+        let speakData = new SpeechSynthesisUtterance();
+        speakData.volume = volume; // From 0 to 1
+        speakData.rate = rate; // From 0.1 to 10
+        speakData.pitch = pitch; // From 0 to 2
+        speakData.text = text;
+        speakData.lang = 'en';
+        speakData.voice = voice;
+
+        // pass the SpeechSynthesisUtterance to speechSynthesis.speak to start speaking 
+        speechSynthesis.speak(speakData);
+
+    }
+
+    if ('speechSynthesis' in window) {
+
+        let voices = getVoices();
+        let rate = 1, pitch = 2, volume = 1;
+        let text = document.getElementById('text-of-story').innerHTML;
+        speak(text, voices[5], rate, pitch, volume);
+
+    } else {
+        console.log(' Speech Synthesis Not Supported 😞');
+    }
+});         
+</script>
+{%endblock%}

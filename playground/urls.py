@@ -12,6 +12,7 @@ urlpatterns = [
     
 
     path('search_story/', views.search_story, name="search_story"),
+    path('read_story/<int:id>/', views.read_story, name="read_story"),
     path('api/', get_story, name='get_story')
     # path('request_story/', views.request_story)
 ]
