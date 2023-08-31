@@ -23,40 +23,44 @@ Home Page
     <div class="row gx-4 gx-lg-6 justify-content-center">
         <div class="col-md-10 col-lg-10 col-xl-7">
             <!-- Post preview-->
-            <div class="post-preview">
-                <a href="#">
-                    <h2 class="post-title">Story of John and his friend Mike about a small Cat</h2>
-                    <h4 class="post-subtitle">
-                        Once upon a time, John and Mike were two best friends who lived in a small town. One day, they decided to go for a walk in the park...
-                    </h4>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Read Your Story</a>
-                    on August 30, 2023
-                </p>
+            <div class="card-body">
+                {% for story in stories %}
+                <div class="post-preview ">
+                    <a href="#">
+                        <h2 class="post-title">Story of {{ story.name }} and {{ story.friend_name }} about {{ story.story_topic }}</h2>
+                        <button id="readButton">Read Text</button>
+
+                    </a>
+                    <p class="post-subtitle" style="text-align: justify;text-justify: inter-word;" id="story">
+                        {{ story.generated_story }}
+                    </p>
+                    <p class="post-meta">
+                        Created By
+                        <a href="#!">{{ user.first_name }}</a>
+                        on {{ story.created_at }}
+                    </p>
+                </div>
+                 <!-- Divider-->
+                <hr class="my-4" />
+                {% endfor %}
+
             </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="#">
-                    <h2 class="post-title">John and Mike Childhood story</h2>
-                    <h4 class="post-subtitle">
-                        They had known each other since they were young and had many fond memories of their childhood together...
-                    </h4>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Read Your Story</a>
-                    on August 20, 2023
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
             <!-- Pager-->
             <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="search_story">Create Your Own Stories →</a></div>
         </div>
     </div>
 </div>
+<script>
+    const readButton = document.getElementById('readButton');
+    var storyElement = document.getElementById('story');
+
+    // Get the content of the story element
+    var storyContent = storyElement.textContent;
+
+    readButton.addEventListener('click', () => {
+        const textToRead = storyContent; // Escape text for JavaScript
+        const utterance = new SpeechSynthesisUtterance(textToRead);
+        speechSynthesis.speak(utterance);
+    });
+</script>
 {% endblock %}

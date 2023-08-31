@@ -46,11 +46,23 @@ Home Page
                 <label for="story_you_want" class="form-label">Story you want?</label>
                 <input type="text" class="form-control" id="story_you_want" name="story_you_want" value="{{story_you_want}}" required>
               </div>
-              <button type="submit" class="btn btn-primary">Search</button>
+              <button type="submit" class="btn btn-primary">
+                Search <span class="fa fa-search"></span>
+              </button>
             </form>
             {% if story %}
-            <div style="margin-top: 10px;">
-                {{story}}
+            <div>
+              <p class="danger">{{ message }}</p>
+            </div>
+            {% endif %}
+            {% if story %}
+            <div class="margin-top: 10px;">
+                <button id="speakButton" class="btn btn-success btn-sm">
+                  Click to Speak <span class="fa fa-play"></span>
+                </button>
+            </div>
+            <div style="margin-top: 10px;text-align: justify;text-justify: inter-word;">
+                <p id="text-of-story">{{story}}</p>
             </div>
             {% endif %}
           </div>
@@ -58,4 +70,49 @@ Home Page
       </div>
     </div>
   </div>
+{%endblock%}
+
+{% block shared %}
+<script>
+document.getElementById('speakButton').addEventListener('click', () => {
+    function getVoices() {
+        let voices = speechSynthesis.getVoices();
+        if (!voices.length) {
+            // some time the voice will not be initialized so we can call speak with empty string
+            // this will initialize the voices 
+            let utterance = new SpeechSynthesisUtterance("");
+            speechSynthesis.speak(utterance);
+            voices = speechSynthesis.getVoices();
+        }
+        return voices;
+    }
+    
+    function speak(text, voice, rate, pitch, volume) {
+        // create a SpeechSynthesisUtterance to configure the how text to be spoken 
+        let speakData = new SpeechSynthesisUtterance();
+        speakData.volume = volume; // From 0 to 1
+        speakData.rate = rate; // From 0.1 to 10
+        speakData.pitch = pitch; // From 0 to 2
+        speakData.text = text;
+        speakData.lang = 'en';
+        speakData.voice = voice;
+
+        // pass the SpeechSynthesisUtterance to speechSynthesis.speak to start speaking 
+        speechSynthesis.speak(speakData);
+
+    }
+
+    if ('speechSynthesis' in window) {
+
+        let voices = getVoices();
+        let rate = 1, pitch = 2, volume = 1;
+        let text = document.getElementById('text-of-story').innerHTML;
+
+        speak(text, voices[5], rate, pitch, volume);
+
+    } else {
+        console.log(' Speech Synthesis Not Supported 😞');
+    }
+});         
+</script>
 {%endblock%}
