@@ -21,6 +21,7 @@ import os.path
 from .forms import *
 from .models import *
 
+from gtts import gTTS 
 
 # Create your views here.
 def index(request):
@@ -148,7 +149,12 @@ def search_story(request):
                 )
                 history_entry.save()
 
-                return render(request, 'search.html', {"your_name": your_name, "your_friend_name": your_friend_name, "story_you_want": story_you_want, "story": story})
+                obj = gTTS(text=story, lang='en', slow=False)
+                file_name = "record_sound_" + str(history_entry.id) + ".mp3"
+                obj.save(staticfiles_storage.path(file_name))
+
+                return render(request, 'search.html', {"your_name": your_name, "your_friend_name": your_friend_name, "story_you_want": story_you_want, 
+                                                        "story": story, 'history_entry' : history_entry})
         else:
             message = "You have to fill all inputs"
             return render(request, 'search.html', {"your_name": your_name, "your_friend_name": your_friend_name, "story_you_want": story_you_want, "message": message})
