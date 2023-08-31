@@ -131,7 +131,7 @@ def search_story(request):
         story_you_want = request.POST.get("story_you_want")
 
         if your_name and your_friend_name and story_you_want:
-            search_key_words = (your_name + " " + your_friend_name + " " + story_you_want).split(" ")
+            search_key_words = (your_name.lower() + " " + your_friend_name.lower() + " " + story_you_want.lower()).split(" ")
             contain_bad_words = check_contain_bad_word(search_key_words)
             if contain_bad_words == True:
                 story = "You are not allowed to search for these word"
@@ -162,6 +162,8 @@ def search_story(request):
     return render(request, 'search.html')
 
 def check_contain_bad_word(search_keywords):
+    # search_keywords = search_keywords.lower()
+
     p = staticfiles_storage.path('bad_words.txt')
     content = open(p).readlines()[0]
     bad_words = content.split(",")
