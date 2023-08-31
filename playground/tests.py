@@ -4,6 +4,8 @@ from django.contrib.auth.models import User  # If you're using the default User 
 
 
 #python manage.py test playground.tests.StoryHistoryModelTestCase
+# This is for console
+
 
 class StoryHistoryModelTestCase(TestCase):
     def setUp(self):
