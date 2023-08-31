@@ -74,9 +74,13 @@ User Profile
                         <a href="#">
                             <h2 class="post-title">Story of {{ story.name }} and {{ story.friend_name }} about {{ story.story_topic }}</h2>
                         </a>
-                        <p class="post-subtitle" style="text-align: justify;text-justify: inter-word;">
-                            {{ story.generated_story }}
+                        <p class="post-subtitle" style="text-align: justify;text-justify: inter-word;margin: 5px 0px;">
+                            {{ story.generated_story | slice:":200" }}....
                         </p>
+                        <a id="readButton" class="btn-dark btn btn-info btn-sm" style="color: #fff"
+                            href="/read_story/{{ story.id }}/">
+                                Read Story <span class="fa fa-book"></span>
+                        </a>
                         <p class="post-meta">
                             Created By
                             <a href="#!">{{ user.first_name }}</a>
